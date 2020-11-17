@@ -103,7 +103,7 @@ export default {
           value: 'booked',
           filter: (value) => {
             const key = this.$store.state.filterForm.booked;
-            if (!key) return true;
+            if (key === undefined) return true;
             return key === value;
           },
         },
@@ -112,7 +112,7 @@ export default {
           value: 'listed',
           filter: (value) => {
             const key = this.$store.state.filterForm.listed;
-            if (!key) return true;
+            if (key === undefined) return true;
             return key === value;
           },
         },
