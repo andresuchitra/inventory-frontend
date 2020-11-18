@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: process.env.VUE_APP_BACKEND_URL || 'http://localhost:3001',
+  baseURL: 'http://ec2-13-212-201-235.ap-southeast-1.compute.amazonaws.com:3001',
 });
