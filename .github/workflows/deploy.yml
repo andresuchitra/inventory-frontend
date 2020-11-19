@@ -1,3 +1,10 @@
+on:
+  push:
+    branches:
+      - main
+  pull-requests:
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
