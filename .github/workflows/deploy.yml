@@ -21,4 +21,4 @@ jobs:
     - name: Deploy static site to S3 bucket
       run: aws s3 sync ./dist/ s3://inventory.andresuchitra.com --delete
     - name: Set as Statis site
-      run: aws s3 website s3://inventory.andresuchitra.com index.html --error-document error.html
+      run: aws s3 website s3://inventory.andresuchitra.com/ --index-document index.html --error-document error.html
