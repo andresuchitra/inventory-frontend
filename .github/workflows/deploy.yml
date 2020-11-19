@@ -19,6 +19,8 @@ jobs:
     - name: Build static site
       run: yarn install && npm run build
     - name: Deploy static site to S3 bucket
-      run: aws s3 sync ./dist/ s3://inventory.andresuchitra.com --delete
-    - name: Set as Statis site
-      run: aws s3 website s3://inventory.andresuchitra.com/ --index-document index.html --error-document error.html
+      run: aws s3 sync ./dist/ s3://${{ secrets.AWS_BUCKET_NAME }} --delete
+    - name: Grant All Users read access
+      run: aws s3api put-object-acl --bucket  --key ${{ secrets.AWS_BUCKET_NAME }} --grant-full-control id="${{ secrets.AWS_ACCOUNT_ID }}" --grant-read uri=http://acs.amazonaws.com/groups/global/AllUsers
+    - name: Set as Static site
+      run: aws s3 website s3://${{ secrets.AWS_BUCKET_NAME }}/ --index-document index.html --error-document error.html
