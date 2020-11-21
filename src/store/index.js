@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     selectedItem: {},
     newItemActive: false,
+    dialog: false,
     items: [],
     showToast: false,
     filterForm: {
@@ -27,6 +28,9 @@ export default new Vuex.Store({
   mutations: {
     SET_NEW_ITEM_ACTIVE(state, data) {
       state.newItemActive = data;
+    },
+    SET_DIALOG(state, data) {
+      state.dialog = data;
     },
     SET_ITEMS(state, data) {
       state.items = [...data];

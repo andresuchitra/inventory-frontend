@@ -13,9 +13,26 @@
     <filter-panel />
     <inventory-list />
     <v-flex class="pa-3 pb-10">
-      <v-btn color="primary" class="op-btn" @click="$store.commit('SET_NEW_ITEM_ACTIVE', true)">+</v-btn>
-      <v-btn color="error" class="op-btn" @click.prevent="deleteItem">-</v-btn>
-      <v-btn class="op-btn">Input File</v-btn>
+      <v-btn color="primary" class="op-btn" @click="$store.commit('SET_NEW_ITEM_ACTIVE', true)">
+        <span style="font-size: 20px; font-weight: 700;">+</span>
+      </v-btn>
+      <v-btn color="error" class="op-btn" @click.prevent="deleteItem">
+        <span style="font-size: 20px; font-weight: 700;">-</span>
+      </v-btn>
+      <v-dialog
+        v-model="dialog"
+        max-width="600px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+          >
+            Input File
+          </v-btn>
+        </template>
+        <Form />
+      </v-dialog>
     </v-flex>
   </div>
 </template>
@@ -23,6 +40,7 @@
 <script>
 import InventoryList from '@/components/InventoryList.vue';
 import FilterPanel from '@/components/FilterPanel.vue';
+import Form from '@/components/Form.vue';
 import { mapState } from 'vuex';
 
 export default {
@@ -30,6 +48,7 @@ export default {
   components: {
     InventoryList,
     FilterPanel,
+    Form,
   },
   data() {
     return {
@@ -50,6 +69,14 @@ export default {
     ...mapState({
       items: (state) => state.items,
     }),
+    dialog: {
+      get() {
+        return this.$store.state.dialog;
+      },
+      set(value) {
+        this.$store.commit('SET_DIALOG', value);
+      },
+    }
   },
   methods: {
     showError(errorData) {
