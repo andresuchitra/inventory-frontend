@@ -1,14 +1,12 @@
 <template>
   <v-app>
     <sidebar></sidebar>
-    <v-app-bar app>
+    <v-app-bar app dense>
       <div class="title">Inventory List</div>
     </v-app-bar>
 
     <v-main>
-      <v-layout class="overflow-auto mx-2">
-        <router-view></router-view>
-      </v-layout>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>

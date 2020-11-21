@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer app width="256" v-model="drawer">
+  <v-navigation-drawer app width="180" v-model="drawer">
       <div class="d-flex justify-center py-2">
         <v-avatar height="100" width="100">
           <v-img src="~@/assets/logo.svg" width="inherit"/>

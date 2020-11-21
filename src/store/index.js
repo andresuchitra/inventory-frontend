@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import api from '@/api/index';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     selectedItem: {},
+    newItemActive: false,
     items: [],
     showToast: false,
     filterForm: {
@@ -17,8 +19,15 @@ export default new Vuex.Store({
       model: '',
       msrp: [],
     },
+    filtersData: {
+      statuses: ['in_stock', 'ordered', 'sold'],
+      booleans: [true, false],
+    },
   },
   mutations: {
+    SET_NEW_ITEM_ACTIVE(state, data) {
+      state.newItemActive = data;
+    },
     SET_ITEMS(state, data) {
       state.items = [...data];
     },
