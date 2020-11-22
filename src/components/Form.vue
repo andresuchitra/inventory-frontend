@@ -124,6 +124,8 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import carRules from '../rules';
+import fillDefaultData from '../helpers/form';
 
 export default {
   name: 'Form',
@@ -154,23 +156,7 @@ export default {
         booked: undefined,
         listed: undefined,
       },
-      rules: {
-        vin: [
-          v => !!v || 'VIN# cannot be blank!',
-          v => (v && /^([A-Z]){4}([0-9]){6}$/.test(v)) || 'VIN# form must be 4 chars (A-Z) and 6 digits'
-        ],
-        make: [v => !!v || 'Make cannot be blank!'],
-        model: [v => !!v || 'Model cannot be blank!'],
-        year: [
-          v => !!v || 'Year cannot be blank!',
-          v => (v && v >= 1900) || 'Year must be equal to or greater than 1900',
-          v => (v && v < 3000) || "Let's just set year 2999 at max",
-        ],
-        msrp: [
-          v => !!v || 'MSRP cannot be blank!',
-          v => (v && v > 0) || 'Money amount cannot be negative or zero!',
-        ],
-      },
+      rules: carRules,
     };
   },
   computed: {
@@ -192,20 +178,16 @@ export default {
       }
     },
     checkAndSubmit() {
-      if (!this.isEdit) {
-        this.$refs.form.validate();
-        this.fillDefaultData();
-        this.$emit('create', this.internalData)
-      }
-      else {
-        this.$emit('update', this.internalData)
-      }
+      if(this.$refs.form.validate()) {
+          this.internalData = fillDefaultData(this.internalData)
 
-    },
-    fillDefaultData() {
-      this.internalData.status = this.internalData.status ? this.internalData.status : 'in_stock';
-      this.internalData.booked = this.internalData.booked === undefined ? this.internalData.booked : false;
-      this.internalData.listed = this.internalData.listed === undefined ? this.internalData.listed : false;
+          if (!this.isEdit) {
+            this.$emit('create', this.internalData)
+          }
+          else {
+            this.$emit('update', this.internalData)
+          }
+      }
     },
     resetForm() {
       this.$refs.form.resetValidation();
@@ -214,7 +196,7 @@ export default {
   },
   create() {
     this.initializeFormData();
-  }
+  },
 }
 </script>
 

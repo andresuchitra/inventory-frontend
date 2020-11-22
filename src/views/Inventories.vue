@@ -1,14 +1,14 @@
 <template>
   <div>
-    <v-alert class="ma-4" v-model="alert.show"
+    <v-alert class="ma-4" v-model="alertShow"
       dense
       dismissible
       outlined
       prominent
       text
-      :type="alert.type"
+      :type="alertType"
     >
-      {{ alert.message }}
+      {{ alertMessage }}
     </v-alert>
     <filter-panel />
     <inventory-list />
@@ -31,7 +31,7 @@
             Input File
           </v-btn>
         </template>
-        <Form />
+        <Form v-on:create="handleCreate" v-on:update="handleUpdate" />
       </v-dialog>
     </v-flex>
   </div>
@@ -42,6 +42,7 @@ import InventoryList from '@/components/InventoryList.vue';
 import FilterPanel from '@/components/FilterPanel.vue';
 import Form from '@/components/Form.vue';
 import { mapState } from 'vuex';
+import api from '../api/index';
 
 export default {
   name: 'Inventories',
@@ -68,6 +69,9 @@ export default {
   computed: {
     ...mapState({
       items: (state) => state.items,
+      selectedItem: (state) => state.selectedItem,
+      alertType: (state) => state.alertType,
+      alertMessage: (state) => state.alertMessage,
     }),
     dialog: {
       get() {
@@ -76,19 +80,17 @@ export default {
       set(value) {
         this.$store.commit('SET_DIALOG', value);
       },
+    },
+    alertShow: {
+      get() {
+        return this.$store.state.alertShow;
+      },
+      set(value) {
+        this.$store.commit('SET_ALERT_SHOW', value);
+      },
     }
   },
   methods: {
-    showError(errorData) {
-      this.alert.message = errorData || errorData.error || 'Unexpected Error';
-      this.alert.type = 'error';
-      this.alert.show = true;
-    },
-    showSuccess(msg) {
-      this.alert.message = msg;
-      this.alert.type = 'success';
-      this.alert.show = true;
-    },
     deleteItem() {
       const deleteId = this.selectedItem?.id;
 
@@ -96,22 +98,41 @@ export default {
         api.delete(`/cars/${deleteId}`)
           .then(() => {
             this.loading = false;
+
+            this.$store.commit('SET_SELECTED_ITEM', undefined);
             this.$store.commit('DELETE_ITEM', deleteId);
+
+            this.$store.dispatch('SHOW_SUCCESS', 'Item is successfully deleted!')
           })
           .catch((e) => {
             this.loading = false;
-            this.showError(e);
+            this.$store.dispatch('SHOW_ERROR', e || e.error || 'Unexpected Error')
           });
       }
     },
-    createItem(formData) {
-      api.create('/cars', formData)
+    handleCreate(formData) {
+      api.post('/cars', formData)
         .then(({ data }) => {
-          this.$store.commit('SET_NEW_ITEM_ACTIVE', false);
-          this.showSuccess('Item is successfully created!')
+          this.$store.commit('ADD_ITEM', data.data);
+
+          this.dialog = false;
+          this.$store.dispatch('SHOW_SUCCESS', 'Item is successfully created!')
         })
         .catch((e) => {
-          this.showError(e);
+          this.$store.dispatch('SHOW_ERROR', e || e.error || 'Unexpected Error')
+        });
+    },
+    handleUpdate(formData) {
+      const id = formData.id;
+      formData = delete formData.id;
+
+      api.put(`/cars/${id}`, formData)
+        .then(({ data }) => {
+          this.$store.dispatch('SHOW_SUCCESS', 'Item is successfully updated!')
+          this.getItems()
+        })
+        .catch((e) => {
+          this.$store.dispatch('SHOW_ERROR', e || e.error || 'Unexpected Error')
         });
     }
   },

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import api from '@/api/index';
 
 Vue.use(Vuex);
 
@@ -10,7 +9,6 @@ export default new Vuex.Store({
     newItemActive: false,
     dialog: false,
     items: [],
-    showToast: false,
     filterForm: {
       booked: undefined,
       listed: undefined,
@@ -24,6 +22,9 @@ export default new Vuex.Store({
       statuses: ['in_stock', 'ordered', 'sold'],
       booleans: [true, false],
     },
+    alertMessage: '',
+    alertType: 'success',
+    alertShow: false,
   },
   mutations: {
     SET_NEW_ITEM_ACTIVE(state, data) {
@@ -34,6 +35,9 @@ export default new Vuex.Store({
     },
     SET_ITEMS(state, data) {
       state.items = [...data];
+    },
+    ADD_ITEM(state, data) {
+      state.items.push(data)
     },
     SET_SELECTED_ITEM(state, data) {
       state.selectedItem = data;
@@ -62,6 +66,27 @@ export default new Vuex.Store({
     },
     SET_MSRP(state, data) {
       state.filterForm = { ...state.filterForm, msrp: data };
+    },
+    SET_ALERT_SHOW(state, data) {
+      state.alertShow = data;
+    },
+    SET_ALERT_TYPE(state, data) {
+      state.alertType = data;
+    },
+    SET_ALERT_MESSAGE(state, data) {
+      state.alertMessage = data;
+    },
+  },
+  actions: {
+    SHOW_SUCCESS: ({ commit }, message) => {
+      commit('SET_ALERT_SHOW', true)
+      commit('SET_ALERT_TYPE', 'success')
+      commit('SET_ALERT_MESSAGE', message)
+    },
+    SHOW_ERROR: ({ commit }, message) => {
+      commit('SET_ALERT_SHOW', true)
+      commit('SET_ALERT_TYPE', 'error')
+      commit('SET_ALERT_MESSAGE', message)
     },
   },
 });
