@@ -12,6 +12,7 @@
         single-select
         item-key="id"
         :headers="headers"
+        disable-pagination
         :items="items"
         :height="'65vh'"
         :style="'overflow-x: auto;'"
